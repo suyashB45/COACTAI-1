@@ -1,0 +1,22 @@
+Flask
+flask-cors
+openai
+azure-storage-blob
+azure-cognitiveservices-speech
+python-dotenv
+fpdf
+supabase
+reportlab
+matplotlib
+numpy
+faiss-cpu
+requests
+uvicorn
+flask-sqlalchemy
+sqlalchemy
+psycopg2-binary
+bcrypt
+flask-bcrypt
+langchain
+langchain-openai
+gunicorn; sys_platform != 'win32'

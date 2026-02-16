@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* LIGHT MODE - Premium Off-White & Deep Accents */
+  --background: oklch(0.99 0.002 285);
+  /* Softened from pure white */
+  --foreground: oklch(0.15 0.02 285);
+  /* Softer black for better reading */
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.02 285);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 285);
+
+  /* Vivid Indigo/Violet for Light Mode - Premium & Trustworthy */
+  --primary: oklch(0.45 0.24 275);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.96 0.01 285);
+  --secondary-foreground: oklch(0.25 0.05 285);
+
+  --muted: oklch(0.96 0.01 285);
+  --muted-foreground: oklch(0.45 0.02 285);
+
+  --accent: oklch(0.94 0.02 285);
+  --accent-foreground: oklch(0.25 0.05 285);
+
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(0.90 0.01 285);
+  --input: oklch(0.90 0.01 285);
+  --ring: oklch(0.55 0.2 285);
+
+  --radius: 0.75rem;
+
+  /* Transparent Glass for Light Mode */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.dark {
+  /* DARK MODE - Deep Space/Midnight Theme */
+  --background: oklch(0.08 0.03 265);
+  /* Deeper, richer violet-black */
+  --foreground: oklch(0.98 0.01 285);
+
+  --card: oklch(0.12 0.04 265);
+  /* Slightly lighter than bg */
+  --card-foreground: oklch(0.98 0.01 285);
+
+  --popover: oklch(0.12 0.04 265);
+  --popover-foreground: oklch(0.98 0.01 285);
+
+  --primary: oklch(0.65 0.22 265);
+  /* Bright electric violet */
+  --primary-foreground: oklch(0.1 0.02 285);
+
+  --secondary: oklch(0.2 0.04 265);
+  --secondary-foreground: oklch(0.98 0.01 285);
+
+  --muted: oklch(0.18 0.03 265);
+  --muted-foreground: oklch(0.7 0.05 285);
+
+  --accent: oklch(0.25 0.05 265);
+  --accent-foreground: oklch(0.98 0.01 285);
+
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.22 0.04 265);
+  --input: oklch(0.22 0.04 265);
+  --ring: oklch(0.55 0.22 285);
+
+  --glass-bg: rgba(10, 10, 25, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    /* Animated Gradient Background - Enhanced Vibrance */
+    background-image:
+      radial-gradient(at 0% 0%, oklch(from var(--primary) l c h / 0.15) 0px, transparent 60%),
+      radial-gradient(at 100% 100%, oklch(from var(--accent) l c h / 0.15) 0px, transparent 60%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* Refined Glassmorphism */
+  .glass {
+    @apply backdrop-blur-xl border border-[var(--glass-border)] shadow-lg;
+    background: var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .card-ultra-glass {
+    @apply bg-card/60 backdrop-blur-xl border border-border/50 shadow-xl rounded-2xl p-6 transition-all duration-300;
+  }
+
+  .card-ultra-glass:hover {
+    @apply -translate-y-2 shadow-2xl border-primary/20;
+  }
+
+  /* Buttons */
+  .btn-premium,
+  .btn-ultra-modern {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300;
+    background: linear-gradient(135deg, var(--color-primary) 0%, oklch(from var(--color-primary) l c h / 0.8) 100%);
+    color: var(--color-primary-foreground);
+    box-shadow: 0 4px 14px 0 oklch(from var(--color-primary) l c h / 0.4);
+  }
+
+  .btn-premium:hover,
+  .btn-ultra-modern:hover {
+    @apply -translate-y-0.5 opacity-90;
+    box-shadow: 0 6px 20px 0 oklch(from var(--color-primary) l c h / 0.6);
+  }
+
+  /* Hero Section */
+  .hero-ultra-modern {
+    @apply relative overflow-hidden bg-background;
+  }
+
+  /* Text Gradients */
+  .text-ultra-gradient {
+    @apply bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent font-extrabold;
+  }
+
+  /* Utilities needed for existing components to adapt */
+  .bg-slate-950 {
+    @apply bg-background;
+    /* Override hardcoded slate-950 to be theme-aware background */
+  }
+
+  .text-white {
+    @apply text-foreground;
+    /* Override hardcoded white to be theme-aware foreground */
+  }
+
+  .text-slate-400 {
+    @apply text-muted-foreground;
+  }
+
+  .bg-slate-900\/50,
+  .bg-slate-900 {
+    @apply bg-muted/50;
+  }
+
+  .border-white\/10 {
+    @apply border-border/50;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/50;
+}

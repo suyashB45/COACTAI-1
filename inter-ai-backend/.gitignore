@@ -1,0 +1,42 @@
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# FAISS Index Files (large binary files)
+*.index
+framework_faiss.index
+
+# Generated Reports
+reports/
+*.pdf
+test_*.pdf
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
