@@ -1061,6 +1061,7 @@ def complete_session(session_id: str):
     # Get scenario_type (new) or fallback to mode (legacy)
     scenario_type = sess.get("scenario_type")
     mode = sess.get("mode", "coaching")
+    session_mode = sess.get("session_mode")
     
     # Generate report data if not present
     if not sess.get("report_data"):
@@ -1074,7 +1075,8 @@ def complete_session(session_id: str):
                 fw_display,
                 mode=mode,
                 scenario_type=scenario_type,
-                ai_character=sess.get("ai_character", "alex")
+                ai_character=sess.get("ai_character", "alex"),
+                session_mode=session_mode
             )
             sess["report_data"] = data
         except Exception as e:

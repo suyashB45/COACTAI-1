@@ -410,7 +410,7 @@ Categorize each question and specify optimal timing in the conversation.
         }
 
 
-def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None, mode="coaching", scenario_type=None, ai_character="alex"):
+def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None, mode="coaching", scenario_type=None, ai_character="alex", session_mode=None):
     """
     Generate report data using SCENARIO-SPECIFIC structures.
     """
@@ -435,6 +435,7 @@ def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None
         "overall_grade": "N/A",
         "summary": "Session analysis.",
         "scenario_type": scenario_type,
+        "session_mode": session_mode or mode, # Fallback to mode if session_mode is missing
         "scenario": scenario  # Pass full scenario text to frontend
     }
 
@@ -443,17 +444,24 @@ def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None
         meta["summary"] = "Session started but no interaction recorded."
         return { "meta": meta, "type": scenario_type }
 
-    # Determine Report Mode based on User Role Context
-    # RULE: If User is PERFORMER -> EVALUATION (Scored)
-    # RULE: If User is EVALUATOR -> MENTORSHIP (Unscored)
+    # Determine Report Mode based on 'mode' param (Priority) or User Role Context (Fallback)
+    # RULE: mode='evaluation' -> SCORING (is_user_performer = True)
+    # RULE: mode='practice'/'mentorship' -> NO SCORING (is_user_performer = False)
     
     is_user_performer = False
-    if scenario_type == "coaching":
-        # User is Staff (Performer) vs Manager (Evaluator)
-        if user_context == "staff": is_user_performer = True
-    elif scenario_type == "negotiation":
-        # User is Seller (Performer) vs Buyer (Evaluator)
-        if user_context == "seller": is_user_performer = True
+    
+    if mode == "evaluation":
+        is_user_performer = True
+    elif mode == "practice" or mode == "mentorship":
+        is_user_performer = False
+    else:
+        # Fallback to legacy logic
+        if scenario_type == "coaching":
+            # User is Staff (Performer) vs Manager (Evaluator)
+            if user_context == "staff": is_user_performer = True
+        elif scenario_type == "negotiation":
+            # User is Seller (Performer) vs Buyer (Evaluator)
+            if user_context == "seller": is_user_performer = True
     
     # -------------------------------------------------------------
     # BUILD SPECIFIC PROMPTS BASED ON SCENARIO TYPE & ROLE
@@ -462,11 +470,11 @@ def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None
     unified_instruction = ""
     
     if scenario_type == "coaching":
-        if is_user_performer: # User is STAFF
-            unified_instruction = """
-### SCENARIO: COACHABILITY ASSESSMENT (USER IS STAFF)
-**GOAL**: Evaluate the user's openness to feedback and their ability to pivot behavior.
-**MODE**: EVALUATION (Growth-Oriented Assessment).
+        if is_user_performer:
+            unified_instruction = f"""
+### SCENARIO: COACHABILITY/PERFORMANCE ASSESSMENT (USER ROLE: {role})
+**GOAL**: Evaluate the user's performance and ability to pivot behavior.
+**MODE**: EVALUATION (Scorecard Assessment).
 **CRITICAL RULE**: IF YOU GIVE A LOW SCORE OR IDENTIFY A WEAKNESS, YOU MUST EXPLAIN "WHY" USING A DIRECT QUOTE.
 **INSTRUCTIONS**:
 1. **BEHAVIORAL ANALYSIS**: Focus on *micro-signals* (tone, pauses, word choice). Go deep into the psychological "why".
@@ -538,10 +546,10 @@ def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None
   "actionable_tips": ["Tactic 1 (Do this tomorrow)...", "Tactic 2 (Mindset shift)..."]
 }
 """
-        else: # User is MANAGER (Evaluator -> Mentorship)
-            unified_instruction = """
-### SCENARIO: LEADERSHIP MENTORSHIP (USER IS MANAGER)
-**GOAL**: specific guidance on improving the user's coaching style.
+        else: 
+            unified_instruction = f"""
+### SCENARIO: LEADERSHIP & STRATEGY MENTORSHIP (USER ROLE: {role})
+**GOAL**: specific guidance on improving the user's approach.
 **MODE**: MENTORSHIP (No Scorecard).
 **INSTRUCTIONS**:
 1. **REFLECTIVE QUESTIONS**: Include a brief "Reference Answer" or "Key Insight" in parentheses for each question to guide self-reflection.
@@ -581,9 +589,9 @@ def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None
             scenario_type = "learning" 
 
     elif scenario_type == "negotiation": 
-        if is_user_performer: # User is SELLER
-            unified_instruction = """
-### SCENARIO: SALES PERFORMANCE ASSESSMENT (USER IS SELLER)
+        if is_user_performer: 
+            unified_instruction = f"""
+### SCENARIO: SALES PERFORMANCE ASSESSMENT (USER ROLE: {role})
 **GOAL**: Generate a High-Performance Sales Audit.
 **MODE**: EVALUATION (Commercial Excellence).
 **CRITICAL RULE**: NO GENERIC FEEDBACK. PROVE YOUR CLAIMS WITH EVIDENCE.
@@ -667,10 +675,10 @@ def analyze_full_report_data(transcript, role, ai_role, scenario, framework=None
   "sales_recommendations": ["Commercial Insight 1...", "Commercial Insight 2..."]
 }
 """
-        else: # User is BUYER (Evaluator -> Mentorship)
-            unified_instruction = """
-### SCENARIO: BUYER STRATEGY MENTORSHIP (USER IS BUYER)
-**GOAL**: specific guidance on how to negotiate better deals as a buyer.
+        else: 
+            unified_instruction = f"""
+### SCENARIO: BUYER STRATEGY MENTORSHIP (USER ROLE: {role})
+**GOAL**: specific guidance on how to negotiate better deals.
 **MODE**: MENTORSHIP (No Scorecard).
 **INSTRUCTIONS**:
 1. **REFLECTIVE QUESTIONS**: Provide a "Reference Insight" for each question.

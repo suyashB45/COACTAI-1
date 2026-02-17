@@ -57,7 +57,7 @@ const DEFAULT_SCENARIOS = [
                 scenario: "CONTEXT: AI coach developing employee skills. \n\nFOCUS AREAS: Transitioning from feature-focused explanations to needs exploration and implementing conversational pauses. \n\nAI BEHAVIOR: Do NOT judge or score. Act as a supportive coach helping the user reflect on a recent interaction. Guide them to realize they need to ask more questions and pause more often.",
                 icon: "GraduationCap",
                 output_type: "learning_plan",
-                mode: "coaching",
+                mode: "practice",
                 scenario_type: "reflection",
                 session_mode: "practice"
             }
